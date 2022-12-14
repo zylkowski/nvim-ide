@@ -9,37 +9,14 @@ neovim in a container with coc all setup to work with rust and python.
 ### Build
 
 ```bash
-docker build -t casonadams/vi .
+docker build -t nvim-ide:latest .
 ```
 
 ### Run in bash
 
 ```bash
-docker run -v $(pwd):/p:z -it casonadams/vi bash
+docker run -v $(pwd):/p:z -it nvim-ide:latest bash
 ```
-
-### Setup to run from anywhere
-
-```bash
-cp ide /usr/local/bin
-```
-
-```bash
-cd /some/project
-ide <file>
-```
-
-### Inside container
-
-Install wanted coc-extentions
-
-```bash
-CocInstall marketplace
-CocList marketplace
-
-extentions are saved to `~/.nvim-container`
-```
-
 ### Navigation
 
 - These are the few I use all the time there are others look at the `init.vim` file
