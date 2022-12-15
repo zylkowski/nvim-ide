@@ -15,7 +15,7 @@ docker build -t nvim-ide:latest .
 ### Run in bash
 
 ```bash
-docker run -v $(pwd):/p:z -it nvim-ide:latest bash
+docker run --rm -v $(pwd):/p:z -it nvim-ide:latest bash
 ```
 ### Navigation
 

@@ -14,13 +14,6 @@ call plug#begin()
 call plug#end()
 " Plugins END
 "------------------------------------------------
-let g:loaded_python_provider=0
-let g:loaded_ruby_provider=0
-let g:loaded_node_provider=0
-let g:python_host_prog="$HOME/.pyenv/shims/python"
-let g:python3_host_prog="$HOME/.pyenv/shims/python"
-
-"------------------------------------------------
 " Settings START
 let mapleader = "\<Space>"
 
@@ -44,8 +37,6 @@ set shortmess+=c   " Shut off completion messages
 " set linebreak
 " set so=999 " locks scroll to middle of screen
 " Settings END
-"------------------------------------------------
-
 "------------------------------------------------
 " Spell check START
  set nospell spelllang=en_us
@@ -137,12 +128,12 @@ nmap <silent> d[ <Plug>(coc-diagnostic-prev-error)
 nmap <silent> g] :bn<CR>
 nmap <silent> g[ :bp<CR>
 
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 "nmap <C-p> :Rg<Cr>
-"nmap <C-e> :Files<Cr>
-nmap <Leader>n :Notes<CR>
+nmap <C-e> :NERDTreeToggle<Cr>
 nmap <Leader>ts :let &scrolloff=999-&scrolloff<CR> " ToggleScrolloff
 
-nmap <Leader>e <Plug>(coc-diagnostic-info)
 nmap <leader>rn <Plug>(coc-rename)
 nmap <leader>ga  <Plug>(coc-codeaction)
 nmap <leader>qf  <Plug>(coc-fix-current)
@@ -155,7 +146,7 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 inoremap <silent><expr> <TAB>
 \ pumvisible() ? "\<C-n>" :
-\ <SID>check_back_space() ? "\<TAB>" :
+\ CheckBackspace() ? "\<TAB>" :
 \ coc#refresh()
 " Remaps END
 "------------------------------------------------
@@ -169,7 +160,7 @@ set updatetime=300
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 
-function! s:check_back_space() abort
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
