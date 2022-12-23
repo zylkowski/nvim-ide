@@ -3,21 +3,32 @@
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'ap/vim-buftabline'
-  Plug 'arcticicestudio/nord-vim'
+  Plug 'morhetz/gruvbox'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+  Plug 'fannheyward/telescope-coc.nvim'
+  Plug 'voldikss/vim-floaterm'
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+  Plug 'ryanoasis/vim-devicons'
+  Plug 'vim-airline/vim-airline'
   Plug 'cespare/vim-toml'
-  Plug 'editorconfig/editorconfig-vim'
   Plug 'farmergreg/vim-lastplace'
   Plug 'junegunn/vim-easy-align'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'fannheyward/coc-rust-analyzer', { 'do': 'yarn install --frozen-lockfile && yarn build' }
   Plug 'preservim/nerdtree'
 call plug#end()
+
+let g:NERDTreeDirArrowExpandable="+"
+let g:NERDTreeDirArrowCollapsible="~"
+
 " Plugins END
 "------------------------------------------------
 " Settings START
 let mapleader = "\<Space>"
 
 filetype plugin on
+set encoding=UTF-8
 set mouse=a
 set nobackup
 set noswapfile
@@ -59,9 +70,6 @@ function! Terminal()
 endfunction
 autocmd TermOpen * startinsert
 
-tnoremap <C-h> <C-\><C-n> <bar> :wincmd h<CR>
-tnoremap <C-k> <C-\><C-n> <bar> :wincmd l<CR>
-
 tnoremap <Esc> <C-\><C-n> <bar> :call ExitTerminal()<CR>
 function! ExitTerminal()
   :set nosplitbelow
@@ -71,26 +79,6 @@ function! ExitTerminal()
   :set number
   :q!
 endfunction
-
-"------------------------------------------------
-" Note search START
-command! -bang -nargs=* Notes
-\ call fzf#vim#grep(
-\   "rg
-\     --column
-\     --line-number
-\     --no-heading
-\     --color=always
-\     --smart-case
-\     --passthru
-\     ''
-\     $NOTES
-\   ".shellescape(<q-args>),
-\   1,
-\   fzf#vim#with_preview(),
-\   <bang>0
-\ )
-"------------------------------------------------
 
 "------------------------------------------------
 " Theme START
@@ -103,16 +91,34 @@ set list
 set listchars=tab:│·,trail:·
 set termguicolors
 set background=dark
+set tabstop=4
+set shiftwidth=4
+let &scrolloff=999-&scrolloff
 
-colorscheme nord
+colorscheme gruvbox
+
+if !exists('g:airline_symbols')
+		let g:airline_symbols = {}
+endif
+
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.dirty='⚡'
 
 " Status line
-set statusline=%<%f\ %h%m%r
-set statusline+=%=%-10.50{ShowCocStatus()}\ %-.(%l,%c%V%)\ %P
+" set statusline=%<%f\ %h%m%r
+" set statusline+=%=%-10.50{ShowCocStatus()}\ %-.(%l,%c%V%)\ %P
 
-function! ShowCocStatus()
-  return get(g:, 'coc_status', '')
-endfunc
+
+"function! ShowCocStatus()
+"  return get(g:, 'coc_status', '')
+"endfunc
 
 " Theme END
 "------------------------------------------------
@@ -132,6 +138,10 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 "nmap <C-p> :Rg<Cr>
 nmap <C-e> :NERDTreeToggle<Cr>
+
+nmap <C-PageUp> :bnext<Cr>
+nmap <C-PageDown> :bprevious<Cr>
+
 nmap <Leader>ts :let &scrolloff=999-&scrolloff<CR> " ToggleScrolloff
 
 nmap <leader>rn <Plug>(coc-rename)
@@ -142,7 +152,7 @@ nmap <expr> <silent> <C-d> <SID>select_current_word()
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-" nmap <Leader> e :call <SID>toggle_diagnostics()<CR>
+nmap <Leader>e :call <SID>toggle_diagnostics()<CR>
 
 inoremap <silent><expr> <TAB>
 \ pumvisible() ? "\<C-n>" :
